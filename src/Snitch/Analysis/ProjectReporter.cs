@@ -18,6 +18,7 @@ namespace Snitch.Analysis
         public void WriteToConsole([NotNull] List<ProjectAnalyzerResult> results, bool noPreRelease)
         {
             var resultsWithPackageToRemove = results.Where(r => r.CanBeRemoved.Count > 0).ToList();
+            var resultsWithProjectToRemove = results.Where(r => r.CanBeRemovedProjects.Count > 0).ToList();
             var resultsWithPackageMayBeRemove = results.Where(r => r.MightBeRemoved.Count > 0).ToList();
             var resultsWithPreReleases = results.Where(r => r.PreReleasePackages.Count > 0).ToList();
 
@@ -47,6 +48,29 @@ namespace Snitch.Analysis
                     }
 
                     report.AddRow($" [yellow]Packages that can be removed from[/] [aqua]{result.Project}[/]:");
+                    report.AddRow(table);
+
+                    if (!last || (last && resultsWithPackageMayBeRemove.Count > 0))
+                    {
+                        report.AddEmptyRow();
+                    }
+                }
+            }
+
+            if (resultsWithProjectToRemove.Count > 0)
+            {
+                foreach (var (_, _, last, result) in resultsWithProjectToRemove.Enumerate())
+                {
+                    var table = new Table().BorderColor(Color.Grey).Expand();
+                    table.AddColumns("[grey]Project[/]", "[grey]Referenced by[/]");
+                    foreach (var item in result.CanBeRemovedProjects)
+                    {
+                        table.AddRow(
+                            $"[green]{item.ReferencedProject.Name}[/]",
+                            $"[aqua]{item.Original.Project.Name}[/]");
+                    }
+
+                    report.AddRow($" [yellow]Projects that can be removed from[/] [aqua]{result.Project}[/]:");
                     report.AddRow(table);
 
                     if (!last || (last && resultsWithPackageMayBeRemove.Count > 0))

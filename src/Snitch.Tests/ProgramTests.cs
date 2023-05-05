@@ -255,6 +255,21 @@ namespace Snitch.Tests
             await Verifier.Verify(output);
         }
 
+        [Fact]
+        [Expectation("ProjectReferences", "Default")]
+        public async Task Should_Return_Expected_Result_For_NestedProjectReferences()
+        {
+            // Given
+            var project = Fixture.GetPath("ProjectReferences\\ProjectReferences.sln");
+
+            // When
+            var (exitCode, output) = await Fixture.Run(project);
+
+            // Then
+            exitCode.ShouldBe(0);
+            await Verifier.Verify(output);
+        }
+
         private static class Fixture
         {
             public static string GetPath(string path)

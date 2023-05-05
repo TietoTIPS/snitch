@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Security.Policy;
+
 using NuGet.Frameworks;
 using NuGet.LibraryModel;
 using NuGet.ProjectModel;
@@ -18,17 +19,20 @@ namespace Snitch.Analysis
             }
 
             // Analyze the project.
-            var result = new List<PackageToRemove>();
-            AnalyzeProject(project, project, result);
+            var packageResult = new List<PackageToRemove>();
+            AnalyzeProject(project, project, packageResult);
+
+            var projectReferenceResult = new List<ProjectReferenceToRemove>();
+            AnalyzeProjectReferences(project, project, projectReferenceResult);
 
             if (project.LockFilePath != null)
             {
                 // Now prune stuff that we're not interested in removing
                 // such as private package references and analyzers.
-                result = PruneResults(project, result);
+                packageResult = PruneResults(project, packageResult);
             }
 
-            return new ProjectAnalyzerResult(project, result);
+            return new ProjectAnalyzerResult(project, packageResult, projectReferenceResult);
         }
 
         private List<ProjectPackage> AnalyzeProject(Project root, Project project, List<PackageToRemove> result)
@@ -96,6 +100,46 @@ namespace Snitch.Analysis
             }
 
             return accumulated;
+        }
+
+        private List<ProjectReferencedProject> AnalyzeProjectReferences(Project root, Project project, List<ProjectReferenceToRemove> projectReferenceResult)
+        {
+            var accumulatedProjects = new List<ProjectReferencedProject>();
+            projectReferenceResult ??= new List<ProjectReferenceToRemove>();
+
+            if (project.ProjectReferences.Count > 0)
+            {
+                // Iterate through all project references.
+                foreach (var child in project.ProjectReferences)
+                {
+                    // Analyze the project recursively.
+                    foreach (var item in AnalyzeProjectReferences(root, child, projectReferenceResult))
+                    {
+                        accumulatedProjects.Add(new ProjectReferencedProject(item.Project, item.ReferencedProject));
+                    }
+                }
+
+                foreach (var referenceProject in project.ProjectReferences)
+                {
+                    if (project == root)
+                    {
+                        var found = accumulatedProjects.FindProjectReference(referenceProject);
+                        if (found != null)
+                        {
+                            if (!projectReferenceResult.ContainsProjectReference(found.ReferencedProject))
+                            {
+                                projectReferenceResult.Add(new ProjectReferenceToRemove(project, referenceProject, found));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        accumulatedProjects.Add(new ProjectReferencedProject(project, referenceProject));
+                    }
+                }
+            }
+
+            return accumulatedProjects;
         }
 
         private static List<PackageToRemove> PruneResults(Project project, List<PackageToRemove> packages)

@@ -20,7 +20,7 @@ namespace Snitch.Analysis
         {
             var results =
                 analyzerResults
-                    .Where(x => x.CanBeRemoved.Count > 0 || x.MightBeRemoved.Count > 0 || x.HasPreReleases)
+                    .Where(x => x.CanBeRemoved.Count > 0 || x.CanBeRemovedProjects.Count > 0 || x.MightBeRemoved.Count > 0 || x.HasPreReleases)
                     .Select(x => new
                     {
                         x.Project,
@@ -29,6 +29,11 @@ namespace Snitch.Analysis
                              PackageName = y.Package.Name,
                              PackageVersion = y.Package.Version?.OriginalVersion,
                              ReferencedBy = y.Original.Project.Name,
+                        }),
+                        CanBeRemovedProjects = x.CanBeRemovedProjects.Select(y => new
+                        {
+                            ReferencedProjectName = y.ReferencedProject.Name,
+                            ReferencedBy = y.Original.Project.Name,
                         }),
                         MightBeRemoved = x.MightBeRemoved.Select(y => new
                         {
