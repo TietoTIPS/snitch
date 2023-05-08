@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 using NuGet.Frameworks;
@@ -107,7 +106,7 @@ namespace Snitch.Analysis
             var accumulatedProjects = new List<ProjectReferencedProject>();
             projectReferenceResult ??= new List<ProjectReferenceToRemove>();
 
-            if (project.ProjectReferences.Count > 0)
+            if (project.IsSdkProject && project.ProjectReferences.Count > 0)
             {
                 // Iterate through all project references.
                 foreach (var child in project.ProjectReferences)

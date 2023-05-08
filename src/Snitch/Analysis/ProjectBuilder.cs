@@ -94,6 +94,7 @@ namespace Snitch.Analysis
             // Set project information.
             project.TargetFramework = result.TargetFramework;
             project.LockFilePath = assetPath;
+            project.IsSdkProject = result.Properties.TryGetValue("UsingMicrosoftNETSdk", out string? isSdkProjectString) && isSdkProjectString == "true";
 
             // Add the project to the built list.
             built.Add(Path.GetFileName(path), project);

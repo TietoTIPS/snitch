@@ -14,6 +14,7 @@ namespace Snitch.Analysis
         public string? LockFilePath { get; set; }
         public List<Project> ProjectReferences { get; }
         public List<Package> Packages { get; }
+        public bool IsSdkProject { get; set; }
 
         public Project(string path)
         {
