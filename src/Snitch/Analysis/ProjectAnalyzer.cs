@@ -89,7 +89,7 @@ namespace Snitch.Analysis
 
             void AddToAccumulated(Package package)
             {
-                if (package.PrivateAssets != null && package.PrivateAssets.Contains("compile"))
+                if (package.PrivateAssets != null && (package.PrivateAssets.Contains("compile", StringComparison.InvariantCultureIgnoreCase) || package.PrivateAssets.Contains("all", StringComparison.InvariantCultureIgnoreCase)))
                 {
                     return;
                 }
