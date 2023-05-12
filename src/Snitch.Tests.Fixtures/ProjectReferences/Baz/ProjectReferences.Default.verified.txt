@@ -1,0 +1,27 @@
+﻿Analyzing...
+Analyzing ProjectReferences.sln
+Analyzing Bar...
+  * Analyzing Foo (netstandard2.0)...
+Analyzing Baz...
+
+╭─────────────────────────────────────────╮
+│  Packages that can be removed from Bar: │
+│ ┌──────────────┬──────────────────────┐ │
+│ │ Package      │ Referenced by        │ │
+│ ├──────────────┼──────────────────────┤ │
+│ │ Autofac      │ Foo                  │ │
+│ └──────────────┴──────────────────────┘ │
+│                                         │
+│  Packages that can be removed from Baz: │
+│ ┌──────────────┬──────────────────────┐ │
+│ │ Package      │ Referenced by        │ │
+│ ├──────────────┼──────────────────────┤ │
+│ │ Autofac      │ Foo                  │ │
+│ └──────────────┴──────────────────────┘ │
+│  Projects that can be removed from Baz: │
+│ ┌──────────────┬──────────────────────┐ │
+│ │ Project      │ Referenced by        │ │
+│ ├──────────────┼──────────────────────┤ │
+│ │ Foo          │ Bar                  │ │
+│ └──────────────┴──────────────────────┘ │
+╰─────────────────────────────────────────╯

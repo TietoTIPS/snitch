@@ -8,6 +8,7 @@
         "ReferencedBy": "Foo"
       }
     ],
+    "CanBeRemovedProjects": [],
     "MightBeRemoved": [],
     "PreRelease": []
   }

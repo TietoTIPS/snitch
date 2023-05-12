@@ -15,6 +15,8 @@ namespace Snitch.Analysis
         public List<Project> ProjectReferences { get; }
         public List<Package> Packages { get; }
         public bool IsSdkProject { get; set; }
+        public bool DisableTransitiveProjectReferences { get; set; }
+        public bool HasTransitiveReferences => this.IsSdkProject && this.ProjectReferences.Count > 0 && !this.DisableTransitiveProjectReferences;
 
         public Project(string path)
         {

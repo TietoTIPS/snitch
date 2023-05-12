@@ -59,6 +59,11 @@ namespace Snitch.Analysis
 
             if (resultsWithProjectToRemove.Count > 0)
             {
+                if (resultsWithPackageToRemove.Count > 0)
+                {
+                    report.AddEmptyRow();
+                }
+
                 foreach (var (_, _, last, result) in resultsWithProjectToRemove.Enumerate())
                 {
                     var table = new Table().BorderColor(Color.Grey).Expand();

@@ -95,6 +95,11 @@ namespace Snitch.Analysis
             project.TargetFramework = result.TargetFramework;
             project.LockFilePath = assetPath;
             project.IsSdkProject = result.Properties.TryGetValue("UsingMicrosoftNETSdk", out string? isSdkProjectString) && isSdkProjectString == "true";
+            project.DisableTransitiveProjectReferences = false;
+            if (result.Properties.TryGetValue("DisableTransitiveProjectReferences", out string? disableTransitiveProjectReferencesString))
+            {
+                project.DisableTransitiveProjectReferences = disableTransitiveProjectReferencesString == "true";
+            }
 
             // Add the project to the built list.
             built.Add(Path.GetFileName(path), project);
