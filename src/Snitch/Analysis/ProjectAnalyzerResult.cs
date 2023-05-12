@@ -18,6 +18,8 @@ namespace Snitch.Analysis
 
         public bool NoPackagesToRemove => CanBeRemoved.Count == 0 && MightBeRemoved.Count == 0;
 
+        public bool NothingToRemove => CanBeRemoved.Count == 0 && MightBeRemoved.Count == 0 && CanBeRemovedProjects.Count == 0;
+
         public bool HasPreReleases => PreReleasePackages.Count > 0;
 
         public ProjectAnalyzerResult(Project project, IEnumerable<PackageToRemove> packages, IEnumerable<ProjectReferenceToRemove> projectReferences)

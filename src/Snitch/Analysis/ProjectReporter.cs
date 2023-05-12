@@ -22,7 +22,7 @@ namespace Snitch.Analysis
             var resultsWithPackageMayBeRemove = results.Where(r => r.MightBeRemoved.Count > 0).ToList();
             var resultsWithPreReleases = results.Where(r => r.PreReleasePackages.Count > 0).ToList();
 
-            if (results.All(x => x.NoPackagesToRemove) && (!noPreRelease || resultsWithPreReleases.Count == 0))
+            if (results.All(x => x.NothingToRemove) && (!noPreRelease || resultsWithPreReleases.Count == 0))
             {
                 // Output the result.
                 _console.WriteLine();
