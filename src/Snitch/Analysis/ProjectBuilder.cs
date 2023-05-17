@@ -115,7 +115,16 @@ namespace Snitch.Analysis
                 }
             }
 
-            // Analyze all project references.
+            // Analyze all project references that are not discarded.
+            var referencedProjects = Array.Empty<string>();
+            if (result.Items.TryGetValue("ProjectReference", out var items))
+            {
+                referencedProjects = items
+                    .Where(x => x.Metadata.All(y => y.Key != "ReferenceOutputAssembly" && y.Value != "false"))
+                    .Select(x => PathUtility.GetPathRelativeToProject(project, x.ItemSpec))
+                    .Distinct().ToArray();
+            }
+
             foreach (var projectReference in result.ProjectReferences)
             {
                 var projectReferencePath = PathUtility.GetPathRelativeToProject(project, projectReference);
@@ -127,6 +136,11 @@ namespace Snitch.Analysis
                     {
                         continue;
                     }
+                }
+
+                if (!referencedProjects.Contains(projectReferencePath, StringComparer.OrdinalIgnoreCase))
+                {
+                    continue;
                 }
 
                 if (!projectReferencePath.EndsWith("csproj", StringComparison.OrdinalIgnoreCase) && !projectReferencePath.EndsWith("fsproj", StringComparison.OrdinalIgnoreCase))
